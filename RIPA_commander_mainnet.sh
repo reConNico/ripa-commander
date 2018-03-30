@@ -124,7 +124,7 @@ arraylength=${#nodes[@]}
 # ASCII Art function
 function asciiart {
 clear
-tput bold; tput setaf 2
+tput bold; tput setaf 6
 cat << "EOF"
 	8888888b.  8888888 8888888b.     d8888      888b    888  .d88888b.  8888888b.  8888888888 
 	888   Y88b   888   888   Y88b   d88888      8888b   888 d88P" "Y88b 888  "Y88b 888        
@@ -1195,7 +1195,7 @@ subsix(){
 
 # Menu
 show_menus() {
-	tput bold; tput setaf 3
+	tput bold; tput setaf 4
 	echo "         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	echo "                               S E L E C T   Y O U R   P R E F E R E N C E                      "
 	echo "         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -1218,7 +1218,7 @@ show_menus() {
 
 # Sub Menu
 sub_menu() {
-	tput bold; tput setaf 3
+	tput bold; tput setaf 5
 	echo "         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	echo "               Additional Options"
 	echo "         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
