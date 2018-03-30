@@ -44,8 +44,8 @@ if [ "$(id -u)" = "0" ]; then
 	clear
 	echo -e "\n$(ired " !!! This script should NOT be started using sudo or as the root user !!! ") "
 	echo -e "\nUse $(green "bash RIPAShell_mainnet.sh") as a REGULAR user instead"
-	echo -e "Execute ONCE $(green "chmod +x RIPAShell_mainnet.sh") followed by $(green "ENTER")"
-	echo -e "and start it only by $(green "./RIPAShell_mainnet.sh") as regular user after\n"
+	echo -e "Execute ONCE $(green "chmod +x RIPA_commander_mainnet.sh") followed by $(green "ENTER")"
+	echo -e "and start it only by $(green "./RIPA_commander_mainnet.sh") as regular user after\n"
 	exit 1
 fi
 
@@ -77,7 +77,7 @@ fi
 
 EDIT=nano
 
-GIT_ORIGIN=mainnet
+GIT_ORIGIN=master
 
 LOC_SERVER="http://localhost:5500"
 
@@ -234,7 +234,7 @@ change_address() {
 	echo "$(yellow "   Enter your delegate address for Stats")"
 	echo "$(yellow "    WITHOUT QUOTES, followed by 'ENTER'")"
 	read -e -r -p "$(yellow " :") " inaddress
-	while [ ! "${inaddress:0:1}" == "K" ] ; do
+	while [ ! "${inaddress:0:1}" == "P" ] ; do
 		echo -e "\n$(ired "   Enter delegate ADDRESS, NOT the SECRET!")\n"
 		read -e -r -p "$(yellow " :") " inaddress 
 	done
@@ -792,17 +792,23 @@ function update_ripa {
 	if [ "$UP_TO_DATE" -ne 1 ]; then
 	        cd $ripadir
 #       	 forever stop app.js
-		TMP_PASS=$(jq -r '.forging.secret | @csv' config.$GIT_ORIGIN.json)
-		mv config.mainnet.json ../
+#		TMP_PASS=$(jq -r '.forging.secret | @csv' config.$GIT_ORIGIN.json)
+		TMP_PASS=$(jq -r '.forging.secret | @csv' config.json)
+		mv config.json ../
 	        git pull origin $GIT_ORIGIN
 		git checkout $GIT_ORIGIN
 	        npm install
 		sleep 1
 
-		if [ ! -e config.$GIT_ORIGIN.json ]; then
-			mv ../config.$GIT_ORIGIN.json .
+#		if [ ! -e config.$GIT_ORIGIN.json ]; then
+#			mv ../config.$GIT_ORIGIN.json .
+#		else
+#			jq -r '.forging.secret = ['"$TMP_PASS"']' config.$GIT_ORIGIN.json > config.$GIT_ORIGIN.tmp && mv config.$GIT_ORIGIN.tmp config.$GIT_ORIGIN.json
+#		fi
+		if [ ! -e config.json ]; then
+			mv ../config.json .
 		else
-			jq -r '.forging.secret = ['"$TMP_PASS"']' config.$GIT_ORIGIN.json > config.$GIT_ORIGIN.tmp && mv config.$GIT_ORIGIN.tmp config.$GIT_ORIGIN.json
+			jq -r '.forging.secret = ['"$TMP_PASS"']' config.json > config.tmp && mv config.tmp config.json
 		fi
 
 		unset TMP_PASS
@@ -822,7 +828,7 @@ function secret {
 	echo -e "$(yellow "    (WITHOUT QUOTES!) followed by 'Enter'")"
         read -e -r -p ": " secret
 #        sed -i "s/\"secret\":\ \[/& \"$secret\"\ /" $ripadir/config.mainnet.json
-	sed -i "/.*secret.*/c\ \ \ \ \"secret\":\ \[\ \"$secret\"\ \]\," $ripadir/config.mainnet.json
+	sed -i "/.*secret.*/c\ \ \ \ \"secret\":\ \[\ \"$secret\"\ \]\," $ripadir/config.json
 }
 
 ### Menu Options ###
@@ -854,7 +860,7 @@ one(){
 		sleep 1
 		proc_vars
 		log_rotate
-		config="$parent/config.mainnet.json"
+		config="$parent/config.json"
 #		echo "$config" 2>/dev/null
 #		pause
 		if  [ ! -e $config ] ; then
@@ -888,14 +894,14 @@ two(){
                 	fi
 			echo -e "$(yellow "    Backing up configuration file to $parent")\n"
 			sleep 1
-			if [ -e $parent/config.mainnet.json ] ; then
+			if [ -e $parent/config.json ] ; then
 				read -e -r -p "$(yellow "    Backup file exists! Overwrite? (Y/N): ")" -i "Y" keys
 				if [ "$keys" == "Y" ]; then
-					cp $ripadir/config.mainnet.json $parent
+					cp $ripadir/config.json $parent
 					cd $parent
 				fi
 			else
-				cp $ripadir/config.mainnet.json $parent
+				cp $ripadir/config.json $parent
 				cd $parent
 			fi
 			echo -e "$(yellow "        Removing RIPA Node directory...")\n"
@@ -905,11 +911,11 @@ two(){
 			drop_user
 			one
 			echo ""
-			if [ -e $parent/config.mainnet.json ] ; then
+			if [ -e $parent/config.json ] ; then
 				read -e -r -p "$(yellow " Do you want to restore your config? (Y/N): ")" -i "Y" keys
 #				echo "Break1"; pause
 				if [ "$keys" == "Y" ]; then
-					cp $parent/config.mainnet.json $ripadir
+					cp $parent/config.json $ripadir
 					echo -e "\n$(green " ✔ Config was restored in $ripadir")\n"
 					read -e -r -p "$(yellow " Do you want to start RIPA Node now? (Y/N): ")" -i "Y" keys
 					if [ "$keys" == "Y" ]; then
@@ -929,10 +935,10 @@ two(){
 			sleep 1
 			one
 			proc_vars
-			if [ -e $parent/config.mainnet.json ] ; then
+			if [ -e $parent/config.json ] ; then
 				read -e -r -p "$(yellow " Do you want to restore your config? (Y/N): ")" -i "Y" keys
 				if [ "$keys" == "Y" ]; then
-					cp $parent/config.mainnet.json $ripadir
+					cp $parent/config.json $ripadir
 					echo -e "\n$(green " ✔ Config was restored in $ripadir")\n"
 				fi
 			else
@@ -969,7 +975,7 @@ three(){
                 	echo -e "\n$(red "       ✘ RIPA Node process is not running")\n"
 			echo -e "$(green "            Updating RIPA Node...")\n"
 			update_ripa
-			forever start app.js --genesis genesisBlock.mainnet.json --config config.mainnet.json >&- 2>&-
+			forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
 			echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
         	        pause
         	fi
@@ -999,7 +1005,7 @@ four(){
 		# Here should come the snap choice
 		snap_menu
                 echo -e "$(green "            Starting RIPA Node...")"
-		forever start app.js --genesis genesisBlock.mainnet.json --config config.mainnet.json >&- 2>&-
+		forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
                 echo -e "\n$(green "    ✔ RIPA Node was successfully started")\n"
                 pause
         else
@@ -1014,7 +1020,7 @@ four(){
 		snap_menu
 		echo -e "$(green "            Starting RIPA Node...")"
 		cd $ripadir
-                forever start app.js --genesis genesisBlock.mainnet.json --config config.mainnet.json >&- 2>&-
+                forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
                 echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
                 pause
         fi
@@ -1039,7 +1045,7 @@ five(){
 		else
 			echo -e "\n$(red "       ✘ RIPA Node process is not running")\n"
 			echo -e "$(green "            Starting RIPA Node...")\n"
-			forever start app.js --genesis genesisBlock.mainnet.json --config config.mainnet.json >&- 2>&-
+			forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
 			echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
 			pause
 		fi
@@ -1072,6 +1078,7 @@ sub_menu
 # Start RIPA Node
 start(){
         proc_vars
+	echo $ripadir
         if [ -e $ripadir/app.js ]; then
                 clear
                 asciiart
@@ -1083,7 +1090,7 @@ start(){
 		else
 			echo -e "$(green "            Starting RIPA Node...")\n"
 			cd $ripadir
-			forever start app.js --genesis genesisBlock.mainnet.json --config config.mainnet.json >&- 2>&-
+			forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
 			cd $parent
 			echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
 			sleep 1
@@ -1199,11 +1206,11 @@ show_menus() {
 	echo
 	echo "         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	echo
-	echo -e "$(green "                                           K. ")RIPA Start"
-	echo "$(red "                                           A. ")Restart RIPA"
+	echo -e "$(green "                                           R. ")RIPA Start"
+	echo "$(red "                                           I. ")Restart RIPA"
 	echo "$(yellow "                                           P. ")Kill RIPA"
-	echo "                                           U. Node Status"
-    echo "                                           L. Node Log"
+	echo "                                           A. Node Status"
+    	echo "                                           L. Node Log"
 	echo "                                           0. Exit"
 	echo
 	tput sgr0
@@ -1231,7 +1238,7 @@ sub_menu() {
 
 read_options(){
 	local choice
-	read -p "        Enter choice [1 - 7,K,A,P,U,L], [0 for exit]: " choice
+	read -p "        Enter choice [1 - 7,R,I,P,A,L], [0 for exit]: " choice
 	case $choice in
 		1) one ;;
 		2) two ;;
@@ -1240,10 +1247,10 @@ read_options(){
 		5) five ;;
 		6) six ;;
 		7) seven ;;
-		K) start ;;
-		A) restart ;;
+		R) start ;;
+		I) restart ;;
 		P) killit;;
-		[uU]) turn;;
+		[uA]) turn;;
 		[lL]) log;;
 		0) exit 0;;
 		*) echo -e "$(red "             Incorrect option!")" && sleep 1
