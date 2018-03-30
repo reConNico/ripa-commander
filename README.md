@@ -10,7 +10,7 @@ This is the bash script I wrote to install a RIPA MainNET node
 
 #### **Download the script**
 
-> wget https://raw.githubusercontent.com/RipaEx/ripa-commander/master/ROPA_commander_mainnet.sh -O ~/RIPA_commander_mainnet.sh
+> wget https://raw.githubusercontent.com/RipaEx/ripa-commander/master/RIPA_commander_mainnet.sh -O ~/RIPA_commander_mainnet.sh
 
 #### **Make it executable**
 
