@@ -126,14 +126,14 @@ function asciiart {
 clear
 tput bold; tput setaf 6
 cat << "EOF"
-	8888888b.  8888888 8888888b.     d8888      888b    888  .d88888b.  8888888b.  8888888888 
-	888   Y88b   888   888   Y88b   d88888      8888b   888 d88P" "Y88b 888  "Y88b 888        
-	888    888   888   888    888  d88P888      88888b  888 888     888 888    888 888        
-	888   d88P   888   888   d88P d88P 888      888Y88b 888 888     888 888    888 8888888    
-	8888888P"    888   8888888P" d88P  888      888 Y88b888 888     888 888    888 888        
-	888 T88b     888   888      d88P   888      888  Y88888 888     888 888    888 888        
-	888  T88b    888   888     d8888888888      888   Y8888 Y88b. .d88P 888  .d88P 888        
-	888   T88b 8888888 888    d88P     888      888    Y888  "Y88888P"  8888888P"  8888888888 
+	8888888b.  8888888 8888888b.     d8888      888b    888  .d88888b.  8888888b.  8888888888
+	888   Y88b   888   888   Y88b   d88888      8888b   888 d88P" "Y88b 888  "Y88b 888
+	888    888   888   888    888  d88P888      88888b  888 888     888 888    888 888
+	888   d88P   888   888   d88P d88P 888      888Y88b 888 888     888 888    888 8888888
+	8888888P"    888   8888888P" d88P  888      888 Y88b888 888     888 888    888 888
+	888 T88b     888   888      d88P   888      888  Y88888 888     888 888    888 888
+	888  T88b    888   888     d8888888888      888   Y8888 Y88b. .d88P 888  .d88P 888
+	888   T88b 8888888 888    d88P     888      888    Y888  "Y88888P"  8888888P"  8888888888
 
 		W E L C O M E  T O  T H E  R I P A  P 2 P  E X C H A N G E  N E T W O R K!
 EOF
@@ -236,7 +236,7 @@ change_address() {
 	read -e -r -p "$(yellow " :") " inaddress
 	while [ ! "${inaddress:0:1}" == "P" ] ; do
 		echo -e "\n$(ired "   Enter delegate ADDRESS, NOT the SECRET!")\n"
-		read -e -r -p "$(yellow " :") " inaddress 
+		read -e -r -p "$(yellow " :") " inaddress
 	done
 	ADDRESS=$inaddress
 #	sed -i "s#\(.*ADDRESS\=\)\( .*\)#\1 "\"$inaddress\""#" $DIR/$BASH_SOURCE
@@ -493,7 +493,7 @@ EOF"
 		fi
 	fi
 }
-                                      
+
 # GIT Update Check
 function git_upd_check {
 
@@ -521,7 +521,7 @@ function git_upd_check {
 	fi
 
 }
-                                      
+
 # Install PostgreSQL
 function inst_pgdb {
         sudo apt install -yyq postgresql postgresql-contrib >&- 2>&-
@@ -545,7 +545,7 @@ function purge_pgdb {
 			sleep 1
 			drop_db
 			drop_user
-						
+
         		# stop the DB if running first...
 		        sudo service postgresql stop
 		        sleep 1
@@ -1181,7 +1181,7 @@ subfive(){
         clear
 	asciiart
 	purge_pgdb
-                             
+
 }
 
 subsix(){
@@ -1269,7 +1269,7 @@ read_sub_options(){
 		5) subfive ;;
 		6) subsix ;;
 		7) seven ;;
-		0) break ;;
+		0) init ;;
 		*) echo -e "$(red "             Incorrect option!")" && sleep 1
 	esac
 }
@@ -1357,15 +1357,23 @@ sudo updatedb
 proc_vars
 #exit
 
+init() {
+    # ----------------------------------------------
+    # Menu infinite loop
+    # ----------------------------------------------
+
+    while true
+    do
+        asciiart
+        # HERE COMES THE GITHUB CHECK
+        git_upd_check
+        show_menus
+        read_options
+    done
+}
+
 # ----------------------------------------------
-# Menu infinite loop
+# Init Application
 # ----------------------------------------------
 
-while true
-do
-	asciiart
-# HERE COMES THE GITHUB CHECK
-	git_upd_check
-	show_menus
-	read_options
-done
+init
