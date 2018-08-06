@@ -226,7 +226,7 @@ MISS_BLOCKS="$(psql -d ripa_mainnet -t -c 'SELECT missedblocks FROM mem_accounts
 #BALANCE="$(psql -d ripa_mainnet -t -c 'SELECT (balance/100000000.0) as balance FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | sed -e 's/^[[:space:]]*//')"
 BALANCE="$(psql -d ripa_mainnet -t -c 'SELECT to_char(("balance"/100000000.0), '"'FM 999,999,999,990D00000000'"' ) as balance FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | xargs)"
 HEIGHT="$(psql -d ripa_mainnet -t -c 'SELECT height FROM blocks ORDER BY HEIGHT DESC LIMIT 1;' | xargs)"
-RANK="$(psql -d ripa_mainnet -t -c 'WITH RANK AS (SELECT DISTINCT "publicKey", "vote", "round", row_number() over (order by "vote" desc nulls last) as "rownum" FROM mem_delegates where "round" = (select max("round") from mem_delegates) ORDER BY "vote" DESC) SELECT "rownum" FROM RANK WHERE "publicKey" = '"'0369093c456fd8704ae4e401f3b3a3ad1581453cf7feb34c513a2f599f9adf6aac'"';' | xargs)"
+RANK="$(psql -d ripa_mainnet -t -c 'WITH RANK AS (SELECT DISTINCT "publicKey", "vote", "round", row_number() over (order by "vote" desc nulls last) as "rownum" FROM mem_delegates where "round" = (select max("round") from mem_delegates) ORDER BY "vote" DESC) SELECT "rownum" FROM RANK WHERE "publicKey" = '"'"$PUBKEY"'"';' | xargs)"
 }
 
 # Stats Address Change
