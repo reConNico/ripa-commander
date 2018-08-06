@@ -986,44 +986,55 @@ three(){
 
 }
 
-four(){
-        asciiart
-        proc_vars
-        if [ "$node" != "" ] && [ "$node" != "0" ]; then
-                echo -e "$(green "       Instance of RIPA Node found with:")"
-                echo -e "$(green "       System PID: $node, Forever PID $forever_process")"
-                echo -e "$(green "       Directory: $testdir")\n"
-                echo -e "\n$(green "            Stopping RIPA Node...")\n"
-		cd $ripadir
-		forever stop $forever_process >&- 2>&-
-		echo -e "$(green "             Dropping RIPA DB...")\n"
-                drop_db
-		drop_user
-		echo -e "$(green "             Creating RIPA DB...")\n"
-		create_db
+four() {
+  asciiart
+  proc_vars
 
-		# Here should come the snap choice
-		snap_menu
-                echo -e "$(green "            Starting RIPA Node...")"
-		forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
-                echo -e "\n$(green "    ✔ RIPA Node was successfully started")\n"
-                pause
-        else
-                echo -e "\n$(red "       ✘ RIPA Node process is not running")\n"
-                echo -e "$(green "             Dropping RIPA DB...")\n"
-		drop_db
-		drop_user
-		echo -e "$(green "             Creating RIPA DB...")\n"
-		create_db
+  echo -e "    $(ired "                                        ")"
+  echo -e "    $(ired "   WARNING! This option will stop all   ")"
+  echo -e "    $(ired "   running RIPA Node processes, remove   ")"
+  echo -e "    $(ired "   and rebuild the databases! Are you   ")"
+  echo -e "    $(ired "   REALLY sure?                         ")"
+  echo -e "    $(ired "                                        ")"
+  read -e -r -p "$(yellow "\n    Type (Y) to proceed or (N) to cancel: ")" -i "N" YN
 
-		# Here should come the snap choice
-		snap_menu
-		echo -e "$(green "            Starting RIPA Node...")"
-		cd $ripadir
-                forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
-                echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
-                pause
-        fi
+  if [[ "$YN" =~ [Yy]$ ]]; then
+    if [ "$node" != "" ] && [ "$node" != "0" ]; then
+      echo -e "$(green "       Instance of RIPA Node found with:")"
+      echo -e "$(green "       System PID: $node, Forever PID $forever_process")"
+      echo -e "$(green "       Directory: $RIPAdir")\n"
+      echo -e "\n$(green "            Stopping RIPA Node...")\n"
+      cd $RIPAdir
+      forever stop $forever_process >&- 2>&-
+      echo -e "$(green "             Dropping RIPA DB...")\n"
+      drop_db
+      drop_user
+      echo -e "$(green "             Creating RIPA DB...")\n"
+      create_db
+
+      # Here should come the snap choice
+      snap_menu
+      echo -e "$(green "            Starting RIPA Node...")"
+      forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
+      echo -e "\n$(green "    ✔ RIPA Node was successfully started")\n"
+      pause
+    else
+      echo -e "\n$(red "       ✘ RIPA Node process is not running")\n"
+      echo -e "$(green "             Dropping RIPA DB...")\n"
+      drop_db
+      drop_user
+      echo -e "$(green "             Creating RIPA DB...")\n"
+      create_db
+
+      # Here should come the snap choice
+      snap_menu
+      echo -e "$(green "            Starting RIPA Node...")"
+      cd $RIPAdir
+      forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
+      echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
+      pause
+    fi
+  fi
 }
 
 five(){
