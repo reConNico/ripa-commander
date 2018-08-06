@@ -85,6 +85,8 @@ ADDRESS=""
 
 SNAPDIR="$HOME/snapshots"
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 re='^[0-9]+$' # For numeric checks
 
 #pubkey="0369093c456fd8704ae4e401f3b3a3ad1581453cf7feb34c513a2f599f9adf6aac"
@@ -246,22 +248,8 @@ change_address() {
 
 # Forging Turn
 turn() {
-	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-#	echo $DIR
-#	echo "$BASH_SOURCE"
-#	echo "$ADDRESS"
 	if [ "$ADDRESS" == "" ] ; then
 		change_address
-#		echo "$(yellow "   Enter your delegate address for Stats")"
-#		echo "$(yellow "    WITHOUT QUOTES, followed by 'ENTER'")"
-#		read -e -r -p "$(yellow " :") " inaddress
-#		while [ ! "${inaddress:0:1}" == "A" ] ; do
-#			echo -e "\n$(ired "   Enter delegate ADDRESS, NOT the SECRET!")\n"
-#			read -e -r -p "$(yellow " :") " inaddress
-#		done
-#		ADDRESS=$inaddress
-##		sed -i "s#\(.*ADDRESS\=\)\( .*\)#\1 "\"$inaddress\""#" $DIR/$BASH_SOURCE
-#		sed -i "1,/\(.*ADDRESS\=\)/s#\(.*ADDRESS\=\)\(.*\)#\1"\"$inaddress\""#" $DIR/$BASH_SOURCE
 	fi
 #	pause
 while true; do
