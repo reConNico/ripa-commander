@@ -225,6 +225,7 @@ PROD_BLOCKS="$(psql -d ripa_mainnet -t -c 'SELECT producedblocks FROM mem_accoun
 MISS_BLOCKS="$(psql -d ripa_mainnet -t -c 'SELECT missedblocks FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | xargs)"
 #BALANCE="$(psql -d ripa_mainnet -t -c 'SELECT (balance/100000000.0) as balance FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | sed -e 's/^[[:space:]]*//')"
 BALANCE="$(psql -d ripa_mainnet -t -c 'SELECT to_char(("balance"/100000000.0), '"'FM 999,999,999,990D00000000'"' ) as balance FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | xargs)"
+FORGED="$(psql -d ripa_mainnet -t -c 'SELECT to_char((("fees" + "rewards")/100000000.0), '"'FM 999,999,999,990D00000000'"' ) as total_forged FROM mem_accounts WHERE "address" = '"'"$ADDRESS"'"' ;' | xargs)"
 HEIGHT="$(psql -d ripa_mainnet -t -c 'SELECT height FROM blocks ORDER BY HEIGHT DESC LIMIT 1;' | xargs)"
 RANK="$(psql -d ripa_mainnet -t -c 'WITH RANK AS (SELECT DISTINCT "publicKey", "vote", "round", row_number() over (order by "vote" desc nulls last) as "rownum" FROM mem_delegates where "round" = (select max("round") from mem_delegates) ORDER BY "vote" DESC) SELECT "rownum" FROM RANK WHERE "publicKey" = '"'0369093c456fd8704ae4e401f3b3a3ad1581453cf7feb34c513a2f599f9adf6aac'"';' | xargs)"
 }
@@ -297,6 +298,7 @@ while true; do
 #	echo -e "$(green "Public Key:")\n$(yellow "$PUBKEY")\n"
 	echo -e "$(green "      Forged Blocks    : ")$(yellow "$PROD_BLOCKS")"
 	echo -e "$(green "      Missed Blocks    : ")$(yellow "$MISS_BLOCKS")"
+  echo -e "$(green "      Total forged     : ")$(yellow "$FORGED")"
 	echo -e "$(green "      RIPA Balance      : ")$(yellow "$BALANCE")"
 	echo
 	echo -e "\n$(yellow "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")"
