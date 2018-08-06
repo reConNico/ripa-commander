@@ -1247,11 +1247,11 @@ read_options(){
 		5) five ;;
 		6) six ;;
 		7) seven ;;
-		R) start ;;
-		I) restart ;;
-		P) killit;;
-		[uA]) turn;;
-		[lL]) log;;
+		[rR]) start ;;
+    [iI]) restart ;;
+    [pP]) killit;;
+    [aA]) turn;;
+    [lL]) log;;
 		0) exit 0;;
 		*) echo -e "$(red "             Incorrect option!")" && sleep 1
 	esac
