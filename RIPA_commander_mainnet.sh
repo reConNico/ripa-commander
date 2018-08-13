@@ -1002,9 +1002,9 @@ four() {
     if [ "$node" != "" ] && [ "$node" != "0" ]; then
       echo -e "$(green "       Instance of RIPA Node found with:")"
       echo -e "$(green "       System PID: $node, Forever PID $forever_process")"
-      echo -e "$(green "       Directory: $RIPAdir")\n"
+      echo -e "$(green "       Directory: $ripadir")\n"
       echo -e "\n$(green "            Stopping RIPA Node...")\n"
-      cd $RIPAdir
+      cd $ripadir
       forever stop $forever_process >&- 2>&-
       echo -e "$(green "             Dropping RIPA DB...")\n"
       drop_db
@@ -1029,7 +1029,7 @@ four() {
       # Here should come the snap choice
       snap_menu
       echo -e "$(green "            Starting RIPA Node...")"
-      cd $RIPAdir
+      cd $ripadir
       forever start app.js --genesis genesisBlock.json --config config.json >&- 2>&-
       echo -e "$(green "    ✔ RIPA Node was successfully started")\n"
       pause
