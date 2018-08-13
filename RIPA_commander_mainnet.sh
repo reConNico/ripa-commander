@@ -275,7 +275,6 @@ while true; do
 	is_syncing=`curl -s --connect-timeout 1 $LOC_SERVER/api/loader/status/sync 2>/dev/null | jq ".syncing"`
   BLOCK_SUM=$((MISS_BLOCKS+PROD_BLOCKS))
 
-  RATIO=$((20000 * PROD_BLOCKS / BLOCK_SUM % 2 + 10000 * PROD_BLOCKS / BLOCK_SUM))
   if ! [[ $BLOCK_SUM -eq 0 ]]
   then
     RATIO=$((20000 * PROD_BLOCKS / BLOCK_SUM % 2 + 10000 * PROD_BLOCKS / BLOCK_SUM))
