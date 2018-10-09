@@ -497,10 +497,10 @@ function ntpd {
 function log_rotate {
 	if [[ "$(uname)" == "Linux" ]]; then
 
-		if [ ! -f /etc/ .d/ripa-logrotate ]; then
+		if [ ! -f /etc/logrotate.d/ripa-logrotate ]; then
 			echo -e " Setting up Logrotate for RIPA node log files."
 			sudo bash -c "cat << 'EOF' >> /etc/logrotate.d/ripa-logrotate
-$HOME/$ripadir/logs/ripa.log {
+$ripadir/logs/ripa.log {
         size=50M
         copytruncate
         create 660 $USER $USER
